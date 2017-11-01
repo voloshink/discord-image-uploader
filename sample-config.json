@@ -1,0 +1,6 @@
+{
+    "token": "bot token",
+    "folderMapping": {
+        "/path/to/folder": ["channelID", "channelID"]
+    }
+}
