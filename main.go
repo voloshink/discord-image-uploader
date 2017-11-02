@@ -68,7 +68,7 @@ func main() {
 						}
 						defer f.Close()
 
-						_, err = bot.ChannelFileSend(c, path.Join(d, image), f)
+						_, err = bot.ChannelFileSend(c, image, f)
 						if err != nil {
 							log.Printf("Error posting image %s to channel %s\n", image, c)
 							log.Println(err)
