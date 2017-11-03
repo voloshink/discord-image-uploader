@@ -20,7 +20,7 @@ type config struct {
 const maxImages = 5
 
 var (
-	imageRegex = regexp.MustCompile(`(.jpg|.png|.gif|jpeg)$`)
+	imageRegex = regexp.MustCompile(`(.jpg|.png|.gif|.jpeg)$`)
 )
 
 func main() {
@@ -58,10 +58,10 @@ func main() {
 			defer wg.Done()
 
 			images := setupDirectory(d)
-			for _, image := range images {
+			for i, image := range images {
+				if (i + 1) <= maxImages {
+					for _, c := range channels {
 
-				for i, c := range channels {
-					if (i + 1) <= maxImages {
 						f, err := os.Open(path.Join(d, image))
 						if err != nil {
 							log.Fatalln(err)
@@ -74,8 +74,8 @@ func main() {
 							log.Println(err)
 						}
 					}
+					os.Rename(path.Join(d, image), path.Join(d, "uploaded", image))
 				}
-				os.Rename(path.Join(d, image), path.Join(d, "uploaded", image))
 			}
 		}(d, channels)
 	}
