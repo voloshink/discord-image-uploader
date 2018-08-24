@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"path"
 	"regexp"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -20,8 +23,13 @@ type config struct {
 const maxImages = 5
 
 var (
-	imageRegex = regexp.MustCompile(`(.jpg|.png|.gif|.jpeg)$`)
+	imageRegex = regexp.MustCompile(`(?i)(.jpg|.png|.gif|.jpeg)$`)
+	letters    = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func main() {
 
@@ -74,6 +82,12 @@ func main() {
 							log.Println(err)
 						}
 					}
+
+					if _, err := os.Stat(path.Join(d, "uploaded", image)); err == nil {
+						split := strings.Split(image, ".")
+						image = randSeq(16) + "." + split[len(split)-1]
+					}
+
 					os.Rename(path.Join(d, image), path.Join(d, "uploaded", image))
 				}
 			}
@@ -98,4 +112,12 @@ func setupDirectory(directory string) []string {
 		}
 	}
 	return images
+}
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
