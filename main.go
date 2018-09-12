@@ -83,12 +83,16 @@ func main() {
 						}
 					}
 
+					originalName := image
 					if _, err := os.Stat(path.Join(d, "uploaded", image)); err == nil {
 						split := strings.Split(image, ".")
 						image = randSeq(16) + "." + split[len(split)-1]
 					}
 
-					os.Rename(path.Join(d, image), path.Join(d, "uploaded", image))
+					err := os.Rename(path.Join(d, originalName), path.Join(d, "uploaded", image))
+					if err != nil {
+						println(err.Error())
+					}
 				}
 			}
 		}(d, channels)
